@@ -77,20 +77,21 @@ def compute_load_indicators():
         norm_current = entry["motor_current"] / MAX_CURRENT  # Normalize current to [0,1]
         norm_vibration = entry["motor_vibration"] / MAX_VIBRATION  # Normalize vibration to [0,1]
 
-        # Weighted load score calculation
-        load_score = round(0.6 * norm_current + 0.4 * norm_vibration, 2)  # Weighted sum
+        # Compute weighted load percentage (0–100)
+        load_percentage = round((0.6 * norm_current + 0.4 * norm_vibration) * 100, 2)
 
-        # Determine load status based on score
-        if load_score < 0.4:
-            load_status = "Normal"  # Low load
-        elif load_score < 0.7:
-            load_status = "Moderate"  # Medium load
+       # Status buckets based on load_percentage
+        if load_percentage < 40:
+            load_status = "Normal"
+        elif load_percentage < 70:
+            load_status = "Moderate"
         else:
-            load_status = "High"  # High load
+            load_status = "High"
             
         # Update node with new load status
         node_update = {
             "loadIndicationStatus": load_status,
+            "loadPercentage":load_percentage,
         }
         update_node(api_client,entry["id"],node_update)  # Update node in API
         
@@ -102,7 +103,7 @@ def compute_load_indicators():
             "path": entry["path"],  # Path
             "motor_current": entry["motor_current"],  # Motor current
             "motor_vibration": entry["motor_vibration"],  # Motor vibration
-            "load_score": load_score,  # Computed load score
+            "load_percentage": load_percentage,  # Computed load percentage
             "load_indication_status": load_status  # Status string
         }
         write_to_influx(influx_write_payload)  # Write to InfluxDB
@@ -130,6 +131,10 @@ def write_to_influx(data):
                 "loadIndicationStatus": {
                     "type": "string",
                     "value": data.get("load_indication_status")  # Field: load status
+                },
+                "loadPercentage": {
+                    "type": "floatField",
+                    "value": data.get("load_percentage")  # Field: load percentage
                 },
             },
             "origin": data.get("timestamp"),  # Timestamp for the point
