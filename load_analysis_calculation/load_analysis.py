@@ -7,7 +7,7 @@ It is designed to be used as part of a Prefect workflow for monitoring pump load
 
 from prefect import task
 from datetime import datetime,timezone
-from .api import create_points_api_client, create_api_client, get_node, update_node, write_influx
+from .api import create_points_api_client, create_api_client, get_entity_nodes, update_node, write_influx
 
 # Maximum allowed values for normalization
 MAX_CURRENT = 20.0         # Amps
@@ -68,7 +68,7 @@ def compute_load_indicators():
     api_client = create_api_client()  # Create API client for node operations
 
     # Get parsed JSON data (list of dicts)
-    raw_data = get_node(api_client)  # Fetch node data from API
+    raw_data = get_entity_nodes(api_client)  # Fetch node data from API
 
     # Extract relevant motor data from nodes
     motor_data = extract_motor_data(raw_data.get("nodes", []))

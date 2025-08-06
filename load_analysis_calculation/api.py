@@ -4,7 +4,8 @@ from prefect import task
 from prefect.cache_policies import NO_CACHE
 from config_loader import load_config
 from openapi_client import ApiClient,Configuration
-from openapi_client.apis.tags import related_entities_api,points_api,entities_v2_api
+from openapi_client.apis.tags.related_entities_api import RelatedEntitiesApi
+from openapi_client.apis.tags import points_api,entities_v2_api
 from openapi_client.model.list_v2_entities_by_relationships_payload import ListV2EntitiesByRelationshipsPayload
 
 config = load_config()
@@ -47,14 +48,14 @@ def create_points_api_client():
         return None
 
 @task(cache_policy=NO_CACHE)
-def get_node(api_client):
+def get_entity_nodes(api_client):
     try:
-        related_entities = related_entities_api.ListV2EntitiesByRelationships(api_client)
+        related_entities_api = RelatedEntitiesApi(api_client)
         body = ListV2EntitiesByRelationshipsPayload(
             relationships=["component"],
             model_id=model_id  # Make sure model_id is defined globally or passed in
         )
-        response = related_entities.list_v2_entities_by_relationships(body=body, skip_deserialization=True)
+        response = related_entities_api.list_v2_entities_by_relationships(body=body, skip_deserialization=True)
 
         if response.response.status >= 400:
             raise Exception(f"Error fetching data: {response.status_code}")
