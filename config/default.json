@@ -1,0 +1,21 @@
+{
+    "api": {
+        "client":{
+            "url":"https://acme.thingspine.com/api/data",
+            "app_id":"af69aab1-7bb4-46d7-b433-c837c96883e2",
+            "username":"197d1c7f-7c40-42d5-b2fb-e33659f263e5",
+            "password":"A~~yWGyS8Em3K3vbq5FYtlFEYx"
+        },
+        "points": {
+            "url":"https://acme.thingspine.com/api/data"
+        }
+    },
+    "influx":{
+        "host":"localhost",
+        "port":8087,
+        "token":"dkmdgsVeK2dLql9PGTS2NX4AH0EiZzKx",
+        "org":"thingspine",
+        "bucket":"events",
+        "measurement":"events"
+    }
+}
