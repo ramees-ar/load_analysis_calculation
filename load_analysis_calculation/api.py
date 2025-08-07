@@ -53,7 +53,7 @@ def get_entity_nodes(api_client):
         related_entities_api = RelatedEntitiesApi(api_client)
         body = ListV2EntitiesByRelationshipsPayload(
             relationships=["component"],
-            model_id=model_id  # Make sure model_id is defined globally or passed in
+            modelId=model_id  # Make sure model_id is defined globally or passed in
         )
         response = related_entities_api.list_v2_entities_by_relationships(body=body, skip_deserialization=True)
 
